@@ -17,7 +17,7 @@
         position: absolute;
         bottom: 20px;
         left: 20px;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
         color: white;
         opacity: 0;
@@ -42,8 +42,10 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-let x = canvas.width / 2;
-let y = canvas.height / 2;
+let centerX = canvas.width / 2;
+let centerY = canvas.height / 2;
+let x = centerX;
+let y = centerY;
 let angle = 0;
 let i = 0;
 
@@ -61,7 +63,7 @@ function drawStep() {
     ctx.lineWidth = 2;
 
     function move(radius, extent, turnLeft=true) {
-        let steps = 40;
+        let steps = 30;
         let stepAngle = (extent * Math.PI / 180) / steps;
 
         for (let j = 0; j < steps; j++) {
@@ -70,9 +72,9 @@ function drawStep() {
 
             angle += (turnLeft ? 1 : -1) * stepAngle;
 
-            // 🔥 Aquí centramos mejor el dibujo
-            x += Math.cos(angle) * radius * 0.015;
-            y += Math.sin(angle) * radius * 0.015;
+            // 🔥 ESCALA MÁS PEQUEÑA PARA CELULAR
+            x += Math.cos(angle) * radius * 0.01;
+            y += Math.sin(angle) * radius * 0.01;
 
             ctx.beginPath();
             ctx.moveTo(prevX, prevY);
@@ -81,21 +83,28 @@ function drawStep() {
         }
     }
 
-    move(150 - i, 50, true);
+    // 🔥 RADIO MÁS PEQUEÑO
+    let baseRadius = 100;
+
+    move(baseRadius - i * 0.6, 50, true);
     angle += 80 * Math.PI / 180;
-    move(150 - i, 50, true);
+    move(baseRadius - i * 0.6, 50, true);
     angle -= 150 * Math.PI / 180;
 
     i++;
     requestAnimationFrame(drawStep);
 }
 
-// 🔥 Reiniciar posición exactamente al centro antes de dibujar
 function startDrawing() {
-    x = canvas.width / 2;
-    y = canvas.height / 2;
+    centerX = canvas.width / 2;
+    centerY = canvas.height / 2;
+
+    x = centerX;
+    y = centerY;
+
     angle = 0;
     i = 0;
+
     drawStep();
 }
 
