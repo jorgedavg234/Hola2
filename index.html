@@ -61,10 +61,8 @@ function drawStep() {
     ctx.strokeStyle = `rgb(${R*255}, ${G*255}, ${B*255})`;
     ctx.lineWidth = 2;
 
-    ctx.save();
-
-    // 🔥 TRUCO CLAVE: mover el origen al centro SIEMPRE
-    ctx.translate(canvas.width / 2, canvas.height / 2);
+    // 🔥 SIEMPRE centrado EXACTO
+    ctx.setTransform(1, 0, 0, 1, canvas.width / 2, canvas.height / 2);
 
     function move(radius, extent, turnLeft=true) {
         let steps = 30;
@@ -80,9 +78,9 @@ function drawStep() {
 
             localAngle += (turnLeft ? 1 : -1) * stepAngle;
 
-            // 🔥 escala pequeña para móvil
-            x += Math.cos(localAngle) * radius * 0.01;
-            y += Math.sin(localAngle) * radius * 0.01;
+            // 🔥 MÁS GRANDE
+            x += Math.cos(localAngle) * radius * 0.02;
+            y += Math.sin(localAngle) * radius * 0.02;
 
             ctx.beginPath();
             ctx.moveTo(prevX, prevY);
@@ -91,14 +89,13 @@ function drawStep() {
         }
     }
 
-    let baseRadius = 90;
+    // 🔥 MÁS GRANDE PERO CONTROLADO
+    let baseRadius = 130;
 
-    move(baseRadius - i * 0.6, 50, true);
+    move(baseRadius - i * 0.8, 50, true);
     angle += 80 * Math.PI / 180;
-    move(baseRadius - i * 0.6, 50, true);
+    move(baseRadius - i * 0.8, 50, true);
     angle -= 150 * Math.PI / 180;
-
-    ctx.restore();
 
     i++;
     requestAnimationFrame(drawStep);
@@ -112,10 +109,6 @@ function startDrawing() {
     drawStep();
 }
 
-startDrawing();
-</script>
-</body>
-</html>
 startDrawing();
 </script>
 </body>
