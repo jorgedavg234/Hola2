@@ -63,7 +63,7 @@ function drawStep() {
     ctx.lineWidth = 2;
 
     function move(radius, extent, turnLeft=true) {
-        let steps = 30;
+        let steps = 40;
         let stepAngle = (extent * Math.PI / 180) / steps;
 
         for (let j = 0; j < steps; j++) {
@@ -72,9 +72,9 @@ function drawStep() {
 
             angle += (turnLeft ? 1 : -1) * stepAngle;
 
-            // 🔥 ESCALA GRANDE Y CONTROLADA
-            x += Math.cos(angle) * radius * 0.02;
-            y += Math.sin(angle) * radius * 0.02;
+            // 🔥 volver a escala original bonita
+            x += Math.cos(angle) * radius * 0.015;
+            y += Math.sin(angle) * radius * 0.015;
 
             ctx.beginPath();
             ctx.moveTo(prevX, prevY);
@@ -95,8 +95,8 @@ function drawStep() {
 function startDrawing() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 🔥 CORRECCIÓN REAL: desplazamos el inicio al centro compensando deriva
-    x = canvas.width / 2 - 150;
+    // 🔥 CENTRADO REAL sin deformar figura
+    x = canvas.width / 2 - 120;
     y = canvas.height / 2;
 
     angle = 0;
