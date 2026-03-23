@@ -40,12 +40,11 @@ function resizeCanvas() {
 }
 
 resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    startDrawing();
+});
 
-let centerX = canvas.width / 2;
-let centerY = canvas.height / 2;
-let x = centerX;
-let y = centerY;
 let angle = 0;
 let i = 0;
 
@@ -62,19 +61,28 @@ function drawStep() {
     ctx.strokeStyle = `rgb(${R*255}, ${G*255}, ${B*255})`;
     ctx.lineWidth = 2;
 
+    ctx.save();
+
+    // 🔥 TRUCO CLAVE: mover el origen al centro SIEMPRE
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+
     function move(radius, extent, turnLeft=true) {
         let steps = 30;
         let stepAngle = (extent * Math.PI / 180) / steps;
+
+        let localAngle = angle;
+        let x = 0;
+        let y = 0;
 
         for (let j = 0; j < steps; j++) {
             let prevX = x;
             let prevY = y;
 
-            angle += (turnLeft ? 1 : -1) * stepAngle;
+            localAngle += (turnLeft ? 1 : -1) * stepAngle;
 
-            // 🔥 ESCALA MÁS PEQUEÑA PARA CELULAR
-            x += Math.cos(angle) * radius * 0.01;
-            y += Math.sin(angle) * radius * 0.01;
+            // 🔥 escala pequeña para móvil
+            x += Math.cos(localAngle) * radius * 0.01;
+            y += Math.sin(localAngle) * radius * 0.01;
 
             ctx.beginPath();
             ctx.moveTo(prevX, prevY);
@@ -83,31 +91,31 @@ function drawStep() {
         }
     }
 
-    // 🔥 RADIO MÁS PEQUEÑO
-    let baseRadius = 100;
+    let baseRadius = 90;
 
     move(baseRadius - i * 0.6, 50, true);
     angle += 80 * Math.PI / 180;
     move(baseRadius - i * 0.6, 50, true);
     angle -= 150 * Math.PI / 180;
 
+    ctx.restore();
+
     i++;
     requestAnimationFrame(drawStep);
 }
 
 function startDrawing() {
-    centerX = canvas.width / 2;
-    centerY = canvas.height / 2;
-
-    x = centerX;
-    y = centerY;
-
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     angle = 0;
     i = 0;
-
+    document.getElementById("mensaje").style.opacity = 0;
     drawStep();
 }
 
+startDrawing();
+</script>
+</body>
+</html>
 startDrawing();
 </script>
 </body>
