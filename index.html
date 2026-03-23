@@ -45,6 +45,7 @@ window.addEventListener('resize', () => {
     startDrawing();
 });
 
+let x, y;
 let angle = 0;
 let i = 0;
 
@@ -61,26 +62,19 @@ function drawStep() {
     ctx.strokeStyle = `rgb(${R*255}, ${G*255}, ${B*255})`;
     ctx.lineWidth = 2;
 
-    // 🔥 SIEMPRE centrado EXACTO
-    ctx.setTransform(1, 0, 0, 1, canvas.width / 2, canvas.height / 2);
-
     function move(radius, extent, turnLeft=true) {
         let steps = 30;
         let stepAngle = (extent * Math.PI / 180) / steps;
-
-        let localAngle = angle;
-        let x = 0;
-        let y = 0;
 
         for (let j = 0; j < steps; j++) {
             let prevX = x;
             let prevY = y;
 
-            localAngle += (turnLeft ? 1 : -1) * stepAngle;
+            angle += (turnLeft ? 1 : -1) * stepAngle;
 
-            // 🔥 MÁS GRANDE
-            x += Math.cos(localAngle) * radius * 0.02;
-            y += Math.sin(localAngle) * radius * 0.02;
+            // 🔥 ESCALA GRANDE Y CONTROLADA
+            x += Math.cos(angle) * radius * 0.02;
+            y += Math.sin(angle) * radius * 0.02;
 
             ctx.beginPath();
             ctx.moveTo(prevX, prevY);
@@ -89,12 +83,9 @@ function drawStep() {
         }
     }
 
-    // 🔥 MÁS GRANDE PERO CONTROLADO
-    let baseRadius = 130;
-
-    move(baseRadius - i * 0.8, 50, true);
+    move(150 - i, 50, true);
     angle += 80 * Math.PI / 180;
-    move(baseRadius - i * 0.8, 50, true);
+    move(150 - i, 50, true);
     angle -= 150 * Math.PI / 180;
 
     i++;
@@ -103,9 +94,16 @@ function drawStep() {
 
 function startDrawing() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 🔥 CORRECCIÓN REAL: desplazamos el inicio al centro compensando deriva
+    x = canvas.width / 2 - 150;
+    y = canvas.height / 2;
+
     angle = 0;
     i = 0;
+
     document.getElementById("mensaje").style.opacity = 0;
+
     drawStep();
 }
 
